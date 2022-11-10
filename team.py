@@ -1,4 +1,3 @@
-from hero import Hero
 import random
 
 class Team:
@@ -25,8 +24,7 @@ class Team:
 
     def stats(self):
         for hero in self.heroes:
-            kd = hero.kills / hero.deaths
-            print(f"{hero.name} Kill/Death:{kd}")
+            print(f"{hero.name} Kills: {hero.kills} Deaths: {hero.deaths}")
 
     def revive_heroes(self):
         for hero in self.heroes:
@@ -45,15 +43,15 @@ class Team:
         while len(living_heroes) > 0 and len(living_opponents) > 0:
             fighter1 = random.choice(living_heroes)
             fighter2 = random.choice(living_opponents)
-            fighter1.attack(fighter2)
+            fighter1.fight(fighter2)
             if fighter1.current_health < 0:
                 living_heroes.remove(fighter1)
             if fighter2.current_health < 0:
                 living_opponents.remove(fighter2)
 
 
-        self.status()
-        other_team.status()
+        self.stats()
+        other_team.stats()
 
         if len(living_heroes) > 0:
             print(f"{self.name} Have won the fight!")

@@ -1,9 +1,3 @@
-"""
-Battle arena set for playing the game.
-Here we will have a bunch of functions to bring everything together.
-"""
-
-
 from ability import Ability
 from weapon import Weapon
 from armour import Armour
@@ -16,26 +10,24 @@ class Arena:
         self.team_one = list()
         self.team_two = list()
 
-
     def create_ability(self):
         name = input("What is the ability name? ")
-        max_damage = input("What is the max damage of the ability? ")
+        max_damage = int(input("What is the max damage of the ability? "))
         return Ability(name, max_damage)
 
     def create_weapon(self):
         name = input("What is the weapon name? ")
-        max_damage = input("What is the max damage of the weapon? ")
+        max_damage = int(input("What is the max damage of the weapon? "))
         return Weapon(name, max_damage)
 
     def create_armour(self):
         name = input("What is the armour name? ")
-        max_damage = input("What is the max damage of the armour? ")
+        max_damage = int(input("What is the max damage of the armour? "))
         return Armour(name, max_damage)
 
     def create_hero(self):
         hero_name = input("What's your hero's name? ")
         hero = Hero(hero_name)
-        add_item = None
         building_hero = True
         while building_hero:
             choice = input("[1] Add ability\n[2] Add weapon\n[3] Add armor\n[4] Done adding items\n\nYour choice: ")
@@ -82,6 +74,3 @@ class Arena:
 
     def team_battle(self):
         self.team_one.attack(self.team_two)
-
-    
-

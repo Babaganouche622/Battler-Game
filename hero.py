@@ -1,10 +1,7 @@
 import random
-from random import randint
-from ability import Ability
-from armour import Armour
 
 class Hero:
-    def __init__(self, name, starting_health=100):
+    def __init__(self, name, starting_health=500):
         self.name = name
         self.starting_health = starting_health
         self.current_health = starting_health
@@ -17,11 +14,11 @@ class Hero:
 
     def fight(self, opponent):
         while self.is_alive() == True and opponent.is_alive() == True:
-            opponent.take_damage(hero.attack())
-            hero.take_damage(opponent.attack())
-            print(hero.current_health)
+            opponent.take_damage(self.attack())
+            self.take_damage(opponent.attack())
+            print(self.current_health)
             print(opponent.current_health)
-        if hero.is_alive() == False:
+        if self.is_alive() == False:
             self.add_death()
             opponent.add_kill()
             print(f"{self.name} has perished.")
@@ -65,27 +62,8 @@ class Hero:
         else:
             return False
 
-    def add_kill(self, num_kills):
-        self.kills += num_kills
+    def add_kill(self):
+        self.kills += 1
 
-    def add_death(self, num_deaths):
-        self.deaths += num_deaths
-
-
-if __name__ == "__main__":
-    hero = Hero("Goku", 500)
-    enemy = Hero("Vegeta", 500)
-    gi = Armour("Gi", 50)
-    fire_ball = Ability("Fire Ball", 100)
-    hero.add_armour(gi)
-    enemy.add_armour(gi)
-    hero.add_ability(fire_ball)
-    enemy.add_ability(fire_ball)
-    hero.fight(enemy)
-    # while hero.is_alive() == True or enemy.is_alive() == True:
-    #     hero.attack(enemy)
-    #     enemy.attack(hero)
-    # print(hero.current_health)
-    # print(enemy.current_health)
-
-    
+    def add_death(self):
+        self.deaths += 1
