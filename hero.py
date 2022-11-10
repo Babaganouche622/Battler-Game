@@ -10,6 +10,7 @@ class Hero:
         self.current_health = starting_health
         self.abilities = list()
         self.armours = list()
+        self.weapons = list()
 
 
     def fight(self, opponent):
@@ -25,6 +26,9 @@ class Hero:
         
     def add_ability(self, ability):
         self.abilities.append(ability)
+
+    def add_weapon(self, weapon):
+        self.abilities.append(weapon)
 
     def add_armour(self, armour):
         self.armours.append(armour)
