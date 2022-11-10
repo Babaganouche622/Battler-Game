@@ -11,6 +11,8 @@ class Hero:
         self.abilities = list()
         self.armours = list()
         self.weapons = list()
+        self.deaths = 0
+        self.kills = 0
 
 
     def fight(self, opponent):
@@ -20,8 +22,12 @@ class Hero:
             print(hero.current_health)
             print(opponent.current_health)
         if hero.is_alive() == False:
+            self.add_death()
+            opponent.add_kill()
             print(f"{self.name} has perished.")
         if opponent.is_alive() == False:
+            self.add_kill()
+            opponent.add_death()
             print(f"{opponent.name} has perished.")
         
     def add_ability(self, ability):
@@ -59,6 +65,11 @@ class Hero:
         else:
             return False
 
+    def add_kill(self, num_kills):
+        self.kills += num_kills
+
+    def add_death(self, num_deaths):
+        self.deaths += num_deaths
 
 
 if __name__ == "__main__":
@@ -76,3 +87,5 @@ if __name__ == "__main__":
     #     enemy.attack(hero)
     # print(hero.current_health)
     # print(enemy.current_health)
+
+    
