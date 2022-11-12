@@ -1,60 +1,44 @@
 import random
+import pygame
+from game_object import GameObject
+from weapon import Weapon
+from armour import Armour
 
-class Hero:
-    def __init__(self, name, starting_health=500):
+class Hero(GameObject):
+    def __init__(self, image, name, starting_health=500):
+        super(Hero, self).__init__(50, 50, image)
         self.name = name
-        self.starting_health = starting_health
+        self.max_health = starting_health
         self.current_health = starting_health
-        self.abilities = list()
-        self.armours = list()
-        self.weapons = list()
+        self.weapon = Weapon
+        self.equipment = list()
         self.deaths = 0
         self.kills = 0
+        self.damage = 0
+        self.armour = 0
+        self.crit_chance = 0
 
 
-    def fight(self, opponent):
-        while self.is_alive() == True and opponent.is_alive() == True:
-            opponent.take_damage(self.attack())
-            self.take_damage(opponent.attack())
-            print(self.current_health)
-            print(opponent.current_health)
-        if self.is_alive() == False:
-            self.add_death()
-            opponent.add_kill()
-            print(f"{self.name} has perished.")
-        if opponent.is_alive() == False:
-            self.add_kill()
-            opponent.add_death()
-            print(f"{opponent.name} has perished.")
-        
-    def add_ability(self, ability):
-        self.abilities.append(ability)
+    def attack(self,opponent):
+        opponent.take_damage(self.damage)
 
-    def add_weapon(self, weapon):
-        self.abilities.append(weapon)
-
-    def add_armour(self, armour):
-        self.armours.append(armour)
-
-    def attack(self):
-        total_damage = 0
-        for ability in self.abilities:
-            total_damage += ability.attack()
-        return total_damage
-
-    def defend(self):
-        total_defence = 0
-        for armour in self.armours:
-            total_defence += armour.block()
-        return total_defence
+    def special(self):
+        """This is the class specific special ability"""
+        pass
 
     def take_damage(self, damage):
-        true_damage = damage - self.defend()
+        true_damage = damage - self.armour
         if true_damage > 0:
             self.current_health -= true_damage
             print(f"{self.name} Took {true_damage} damage!")
-        else:
-            print(f'{self.name} Took no damage!')
+
+    def add_equipment(self, item):
+        if isinstance(item, Weapon):
+            self.weapon = item
+            self.damage += item.damage
+        if isinstance(item, Armour):
+            self.equipment.append(item)
+            self.armour += item.defence
 
     def is_alive(self):
         if self.current_health > 0:
@@ -67,3 +51,5 @@ class Hero:
 
     def add_death(self):
         self.deaths += 1
+
+
