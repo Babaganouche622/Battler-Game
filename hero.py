@@ -6,6 +6,16 @@ from armour import Armour
 from button import Button
 
 class Hero(GameObject):
+    """
+    This is our large hero class. 
+    Currrently being used to build too much.
+    Every creature needs:
+    Name, Image, Starting HP, Weapon, Equipment list, Unit Damage, Unit Armour rating, Crit Chance, Accuracy, 
+    Needs to be broken into 7 sub classes:
+    Paladin, White mage, Summoner, Ninja, Dragoon, basic enemy, Boss.
+    Things to move:
+    Experience, Buttons, Special(), Display Stats().
+    """
     def __init__(self, image, name, starting_health=500, damage=0):
         super(Hero, self).__init__(50, 50, image)
         self.name = name
@@ -13,19 +23,24 @@ class Hero(GameObject):
         self.current_health = starting_health
         self.weapon = Weapon
         self.equipment = list()
-        self.deaths = 0
-        self.kills = 0
         self.damage = damage
         self.armour = 0
         self.crit_chance = 0
-        self.button = ''
+        self.attack_button = Button
+        self.special_button = Button
         self.experience = 0
 
-    def add_button(self, button):
-        self.button = button
+    def add_attack_button(self, button):
+        self.attack_button = button
+
+    def add_special_button(self, button):
+        self.special_button = button
 
     def attack(self, opponent):
-        """Roll crit chance, apply damage to opponent"""
+        """
+        Roll crit chance, apply damage to opponent
+        Need to add Miss chance.
+        """
         roll = random.randint(0, 100)
         damage = self.damage
         if roll < self.crit_chance:
@@ -55,7 +70,7 @@ class Hero(GameObject):
             self.damage = item.get_damage()
         if isinstance(item, Armour):
             self.equipment.append(item)
-            self.armour += item.defence
+            self.armour += item.get_defence()
 
     def is_alive(self):
         """Check if the Hero is alive or dead"""
@@ -68,6 +83,7 @@ class Hero(GameObject):
         self.experience += experience
 
     def display_equipment(self):
+        """This method is only here to loop the items in the equipment list for the display_stats() method."""
         string = ""
         for item in self.equipment:
             string += item.name
@@ -90,5 +106,3 @@ f"""
 |-------------------------------------|
         
 """)
-        pass
-

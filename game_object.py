@@ -1,6 +1,8 @@
 import pygame
 
 class GameObject(pygame.sprite.Sprite):
+    """This is the generic game object for all ingame sprites. 
+    We make all allies and enemies starting with the basic class."""
     def __init__(self, x, y, image):
         super(GameObject, self).__init__()
         self.surf = pygame.image.load(image)

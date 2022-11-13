@@ -1,6 +1,10 @@
 import random
 
 class Team:
+    """
+    Needs to be fleshed out more, currently only being used to contain the members of each team
+    Will need a way to add experience/items/manage inventories down the road.
+    """
     def __init__(self, name):
         self.name = name
         self.heroes = list()
