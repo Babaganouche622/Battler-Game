@@ -8,3 +8,4 @@ class Armour:
 
     def block(self):
         return random.randint(0, self.max_block)
+        

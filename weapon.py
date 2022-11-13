@@ -12,3 +12,4 @@ class Weapon:
 
     def get_damage(self):
         return self.damage
+        
