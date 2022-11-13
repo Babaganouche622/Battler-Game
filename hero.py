@@ -1,69 +1,94 @@
 import random
+import pygame
+from game_object import GameObject
+from weapon import Weapon
+from armour import Armour
+from button import Button
 
-class Hero:
-    def __init__(self, name, starting_health=500):
+class Hero(GameObject):
+    def __init__(self, image, name, starting_health=500, damage=0):
+        super(Hero, self).__init__(50, 50, image)
         self.name = name
-        self.starting_health = starting_health
+        self.max_health = starting_health
         self.current_health = starting_health
-        self.abilities = list()
-        self.armours = list()
-        self.weapons = list()
+        self.weapon = Weapon
+        self.equipment = list()
         self.deaths = 0
         self.kills = 0
+        self.damage = damage
+        self.armour = 0
+        self.crit_chance = 0
+        self.button = ''
+        self.experience = 0
 
+    def add_button(self, button):
+        self.button = button
 
-    def fight(self, opponent):
-        while self.is_alive() == True and opponent.is_alive() == True:
-            opponent.take_damage(self.attack())
-            self.take_damage(opponent.attack())
-            print(self.current_health)
-            print(opponent.current_health)
-        if self.is_alive() == False:
-            self.add_death()
-            opponent.add_kill()
-            print(f"{self.name} has perished.")
-        if opponent.is_alive() == False:
-            self.add_kill()
-            opponent.add_death()
-            print(f"{opponent.name} has perished.")
-        
-    def add_ability(self, ability):
-        self.abilities.append(ability)
+    def attack(self, opponent):
+        """Roll crit chance, apply damage to opponent"""
+        roll = random.randint(0, 100)
+        damage = self.damage
+        if roll < self.crit_chance:
+            damage = self.damage * self.weapon.crit_multiplier
+        opponent.take_damage(damage)
+        print(f"{self.name} hits {opponent.name} for {damage}!")
 
-    def add_weapon(self, weapon):
-        self.abilities.append(weapon)
-
-    def add_armour(self, armour):
-        self.armours.append(armour)
-
-    def attack(self):
-        total_damage = 0
-        for ability in self.abilities:
-            total_damage += ability.attack()
-        return total_damage
-
-    def defend(self):
-        total_defence = 0
-        for armour in self.armours:
-            total_defence += armour.block()
-        return total_defence
+    def special(self):
+        """This is the class specific special ability"""
+        pass
 
     def take_damage(self, damage):
-        true_damage = damage - self.defend()
+        """take the opponent's damage roll and subtract this Hero's armour rating, then apply the damage left over"""
+        true_damage = damage - self.armour
         if true_damage > 0:
             self.current_health -= true_damage
             print(f"{self.name} Took {true_damage} damage!")
-        else:
-            print(f'{self.name} Took no damage!')
+
+    def add_equipment(self, item):
+        """
+        Add a weapon, only 1 at a time right now.
+        Add infinit armour right now
+        Check for specific Class instance
+        """
+        if isinstance(item, Weapon):
+            self.weapon = item
+            self.damage = item.get_damage()
+        if isinstance(item, Armour):
+            self.equipment.append(item)
+            self.armour += item.defence
 
     def is_alive(self):
+        """Check if the Hero is alive or dead"""
         if self.current_health > 0:
             return True
         else:
             return False
 
-    def add_kill(self):
-        self.kills += 1
+    def add_experience(self, experience):
+        self.experience += experience
 
-    def add_death(self):
-        self.deaths += 1
+    def display_equipment(self):
+        string = ""
+        for item in self.equipment:
+            string += item.name
+        return string
+
+    def display_stats(self):
+        """
+        Display all the stats of the given hero in a clean console log for now
+        """
+        print(
+f"""
+|-------------------------------------|
+| Name: {self.name} 
+| Weapon: {self.weapon.name}
+| Damage: {self.damage}
+| Equipment: {self.display_equipment()}
+| Armour: {self.armour}
+| Current Health: {self.current_health}
+| Experience: {self.experience}
+|-------------------------------------|
+        
+""")
+        pass
+
