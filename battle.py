@@ -1,5 +1,6 @@
 from arena import Arena
 import pygame
+from pygame import mixer
 from hero import Hero
 from team import Team
 from button import Button
@@ -9,6 +10,11 @@ import random
 clock = pygame.time.Clock()
 
 pygame.init()
+mixer.init()
+
+mixer.music.load("Battle-Game-Music/Fight.mp3")
+mixer.music.load("Battle-Game-Music/Fanfare.mp3")
+mixer.music.load("Battle-Game-Music/Boss.mp3")
 screen = pygame.display.set_mode([2000, 1250])
 all_sprites = pygame.sprite.Group()
 attack_button = pygame.image.load("Battle-Game-Images/attack.jpeg").convert_alpha()
@@ -19,7 +25,7 @@ cecil_harvey.add_button(Button(100, 1100, attack_button, 3))
 cecil_harvey.add_equipment(Weapon("Excalibur", "Sword", 500, 0))
 cecil_harvey.add_equipment(Armour("Mithril", 100))
 
-rosa_farrell = Hero("Battle-Game-Images/Rosa-copy.jpg", "Rosa Farrell", 1800)
+rosa_farrell = Hero("Battle-Game-Images/Rosa-copy.png", "Rosa Farrell", 1800)
 rosa_farrell.add_button(Button(500, 1100, attack_button, 3))
 rosa_farrell.add_equipment(Weapon("Bow", "Bow", 200, 0))
 rosa_farrell.add_equipment(Armour("Robe", 50))
@@ -29,12 +35,12 @@ edge_geraldin.add_button(Button(900, 1100, attack_button, 3))
 edge_geraldin.add_equipment(Weapon("Katana", "Sword", 500, 0))
 edge_geraldin.add_equipment(Armour("Gi", 50))
 
-rydia_of_the_mist = Hero("Battle-Game-Images/Rydia-V1-copy.jpg", "Rydia of the Mist", 1800)
+rydia_of_the_mist = Hero("Battle-Game-Images/Rydia-V1-copy.png", "Rydia of the Mist", 1800)
 rydia_of_the_mist.add_button(Button(1300, 1100, attack_button, 3))
 rydia_of_the_mist.add_equipment(Weapon("Whip", "Whip", 200, 0))
 rydia_of_the_mist.add_equipment(Armour("Dress", 50))
 
-kain_highwind = Hero("Battle-Game-Images/Kain-V2-copy.jpg", "Kain Highwind", 2500)
+kain_highwind = Hero("Battle-Game-Images/Kain-V2-copy.png", "Kain Highwind", 2500)
 kain_highwind.add_button(Button(1700, 1100, attack_button, 3))
 kain_highwind.add_equipment(Weapon("Dragon Lance", "Spear", 500, 0))
 kain_highwind.add_equipment(Armour("Dragon Armour", 100))
@@ -60,9 +66,11 @@ edge_geraldin.move(800, 600)
 rydia_of_the_mist.move(1200, 600)
 kain_highwind.move(1600, 600)
 
+boss_turn = 0
 turn = 0
 cecil_turn = 0
 running = True 
+new_battle = True
 while running: 
 	# Looks at events 
     for event in pygame.event.get():
@@ -93,15 +101,26 @@ while running:
     for entity in enemies.heroes:
         entity.render(screen)
 
-    if len(enemies.heroes) == 0:
+    if new_battle:
         number_enemies = random.randint(1, 5)
-        while number_enemies > 0:
-            enemies.add_hero(Hero("Battle-Game-Images/Goblin-copy.jpg", "Goblin", 500, 100))
-            number_enemies -= 1
-        x = 50
-        for enemy in enemies.heroes:
-            enemy.move(x, 50)
-            x += 400
+        if boss_turn == 5:
+            enemies.add_hero(Hero("Battle-Game-Images/Behemoth-copy.png", "Behemoth", 50000, 500))
+        else:
+            while number_enemies > 0:
+                enemies.add_hero(Hero("Battle-Game-Images/Goblin-copy.png", "Goblin", 500, 100))
+                number_enemies -= 1
+            x = 50
+            for enemy in enemies.heroes:
+                enemy.move(x, 50)
+                x += 400
+        boss_turn += 1
+        new_battle = False
+
+
+    # VIctory condition
+    if len(enemies.heroes) == 0:
+        pass
+
 
     # Update the display
     pygame.display.flip()

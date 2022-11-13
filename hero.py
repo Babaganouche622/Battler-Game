@@ -19,6 +19,7 @@ class Hero(GameObject):
         self.armour = 0
         self.crit_chance = 0
         self.button = ''
+        self.experience = 0
 
     def add_button(self, button):
         self.button = button
@@ -63,13 +64,8 @@ class Hero(GameObject):
         else:
             return False
 
-    def add_kill(self):
-        """Add a kill for stats page"""
-        self.kills += 1
-
-    def add_death(self):
-        """Add a death for stats page"""
-        self.deaths += 1
+    def add_experience(self, experience):
+        self.experience += experience
 
     def display_equipment(self):
         string = ""
@@ -90,6 +86,7 @@ f"""
 | Equipment: {self.display_equipment()}
 | Armour: {self.armour}
 | Current Health: {self.current_health}
+| Experience: {self.experience}
 |-------------------------------------|
         
 """)

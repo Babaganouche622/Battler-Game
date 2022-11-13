@@ -14,13 +14,10 @@ class Team:
             if enemy == index:
                 self.heroes.remove(enemy)
 
-    def view_all_heroes(self):
+    def add_experience(self, experience):
+        each_experience = round(int(experience) / len(self.heroes))
         for hero in self.heroes:
-            print(hero.name)
-
-    def stats(self):
-        for hero in self.heroes:
-            print(f"{hero.name} Kills: {hero.kills} Deaths: {hero.deaths}")
+            hero.add_experience(int(each_experience))
 
     def revive_heroes(self):
         for hero in self.heroes:
