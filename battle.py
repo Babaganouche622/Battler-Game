@@ -12,10 +12,9 @@ clock = pygame.time.Clock()
 pygame.init()
 mixer.init()
 
-mixer.music.load("Battle-Game-Music/Fight.mp3")
-mixer.music.load("Battle-Game-Music/Fanfare.mp3")
-mixer.music.load("Battle-Game-Music/Boss.mp3")
+# mixer.music.set_volume(1)
 screen = pygame.display.set_mode([2000, 1250])
+background = pygame.image.load("Battle-Game-Images/FF4-arena.jpeg").convert_alpha()
 all_sprites = pygame.sprite.Group()
 attack_button = pygame.image.load("Battle-Game-Images/attack.jpeg").convert_alpha()
 
@@ -45,10 +44,6 @@ kain_highwind.add_button(Button(1700, 1100, attack_button, 3))
 kain_highwind.add_equipment(Weapon("Dragon Lance", "Spear", 500, 0))
 kain_highwind.add_equipment(Armour("Dragon Armour", 100))
 
-# goblin = Hero("Battle-Game-Images/Goblin-copy.jpg", "Goblin", 500, 100)
-# behemoth = Hero("Battle-Game-Images/Behemoth-copy.jpg", "Behemoth", 50000, 500)
-
-
 hero = [cecil_harvey, rosa_farrell, edge_geraldin, rydia_of_the_mist, kain_highwind]
 
 heroes = Team("Crystal Warriors")
@@ -57,11 +52,8 @@ enemies = Team("Baddies")
 for dude in hero:
     heroes.add_hero(dude)
 
-
-
 cecil_harvey.move(0, 600)
 rosa_farrell.move(400, 600)
-# behemoth.move(700, 50)
 edge_geraldin.move(800, 600)
 rydia_of_the_mist.move(1200, 600)
 kain_highwind.move(1600, 600)
@@ -71,6 +63,9 @@ turn = 0
 cecil_turn = 0
 running = True 
 new_battle = True
+boss = False
+music = True
+experience = 0
 while running: 
 	# Looks at events 
     for event in pygame.event.get():
@@ -78,6 +73,8 @@ while running:
             running = False
     
     screen.fill((255, 255, 255))
+    screen.blit(background, [0, 0])
+
 
     for hero in heroes.heroes:
         if hero.button.draw(screen):
@@ -85,6 +82,7 @@ while running:
             hero.attack(enemy)
             if not enemy.is_alive():
                 enemies.remove_hero(enemy)
+                experience += 500
     turn += 1
     if turn == 10 * 60:
         for hero in heroes.heroes:
@@ -94,6 +92,7 @@ while running:
             enemy.attack(hit_hero)
             if not hit_hero.is_alive():
                 heroes.remove_hero(hit_hero)
+                
         turn = 0
 
     for entity in heroes.heroes:
@@ -102,24 +101,53 @@ while running:
         entity.render(screen)
 
     if new_battle:
+        mixer.music.unload()
+        mixer.music.load("Battle-Game-Music/Fight.mp3")
+        mixer.music.play(-1)
         number_enemies = random.randint(1, 5)
-        if boss_turn == 5:
-            enemies.add_hero(Hero("Battle-Game-Images/Behemoth-copy.png", "Behemoth", 50000, 500))
-        else:
-            while number_enemies > 0:
-                enemies.add_hero(Hero("Battle-Game-Images/Goblin-copy.png", "Goblin", 500, 100))
-                number_enemies -= 1
-            x = 50
-            for enemy in enemies.heroes:
-                enemy.move(x, 50)
-                x += 400
+        while number_enemies > 0:
+            enemies.add_hero(Hero("Battle-Game-Images/Goblin-copy.png", "Goblin", 500, 100))
+            number_enemies -= 1
+        x = 50
+        for enemy in enemies.heroes:
+            enemy.move(x, 50)
+            x += 400
         boss_turn += 1
         new_battle = False
 
-
     # VIctory condition
     if len(enemies.heroes) == 0:
-        pass
+        if music:
+            mixer.music.stop()
+            mixer.music.unload()
+            mixer.music.load("Battle-Game-Music/Fanfare.mp3")
+            mixer.music.play(-1)
+            music = False
+        new_fight_button = Button(1800, 300, attack_button, 4)
+
+        if new_fight_button.draw(screen):
+            if boss_turn >= 5:
+                boss = True
+                new_fight_button = ''
+                music = True
+            else:
+                new_battle = True
+                new_fight_button = ''
+                music = True
+
+
+    if boss:
+        if music:
+            mixer.music.unload()
+            mixer.music.load("Battle-Game-Music/Boss.mp3")
+            mixer.music.play(-1)
+            music = False
+        enemies.add_hero(Hero("Battle-Game-Images/Behemoth-copy.png", "Behemoth", 50000, 500))
+        boss = False
+        music = True
+        for enemy in enemies.heroes:
+            enemy.move(700, 50)
+
 
 
     # Update the display
